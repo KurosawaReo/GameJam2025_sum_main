@@ -129,11 +129,11 @@ TextureImporter:
       name: conveyor_belt_16x16_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 2
-        width: 14
-        height: 14
-      alignment: 0
+        x: 0
+        y: 0
+        width: 16
+        height: 16
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d9c458f068de83246959974d67c6c14a
     internalID: 0
     vertices: []
     indices: 
