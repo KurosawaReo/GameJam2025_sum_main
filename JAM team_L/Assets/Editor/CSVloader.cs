@@ -263,6 +263,17 @@ public class CSVloader : EditorWindow
     }
 
     /// <summary>
+    /// ワールド座標をローカル座標に変換
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="wPos"></param>
+    /// <returns></returns>
+    public static Vector2 WPosToLPos(GameObject obj, Vector2 wPos)
+    {
+        var IPos = obj.transform.InverseTransformPoint(wPos);
+        return IPos;
+    }
+    /// <summary>
     /// マップ上にプレハブを配置して生成
     /// </summary>
     void GenerateMap()
