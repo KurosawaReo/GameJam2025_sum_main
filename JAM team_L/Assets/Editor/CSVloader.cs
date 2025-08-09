@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using MyLib.Position;
 
 /// <summary>
 /// CSVからマップデータを読み書き・編集・プレハブ配置できるエディタウィンドウ
@@ -156,7 +157,8 @@ public class CSVloader : EditorWindow
             for (int x = 0; x < width; x++)
             {
                 string label = grid[x, y].ToString();
-                if (GUILayout.Button(label, GUILayout.Width(30), GUILayout.Height(30)))
+//              if (GUILayout.Button(label, GUILayout.Width(30), GUILayout.Height(30)))
+                if (GUILayout.RepeatButton(label, GUILayout.Width(30), GUILayout.Height(30)))
                 {
                     if (Event.current.button == 1)
                         grid[x, y] = 0; // 右クリックで消去
@@ -253,27 +255,6 @@ public class CSVloader : EditorWindow
     }
 
     /// <summary>
-    /// ウィンドウの左下と右上のワールド座標を取得
-    /// </summary>
-    public static (Vector3 lb, Vector3 rt) GetWindowPos()
-    {
-        Vector3 lb = Camera.main.ScreenToWorldPoint(Vector3.zero);
-        Vector3 rt = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
-        return (lb, rt);
-    }
-
-    /// <summary>
-    /// ワールド座標をローカル座標に変換
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="wPos"></param>
-    /// <returns></returns>
-    public static Vector2 WPosToLPos(GameObject obj, Vector2 wPos)
-    {
-        var IPos = obj.transform.InverseTransformPoint(wPos);
-        return IPos;
-    }
-    /// <summary>
     /// マップ上にプレハブを配置して生成
     /// </summary>
     void GenerateMap()
@@ -284,10 +265,11 @@ public class CSVloader : EditorWindow
             return;
         }
 
+        //古い親オブジェクトを削除.
         GameObject oldMap = GameObject.Find("GeneratedMap");
         if (oldMap != null)
             DestroyImmediate(oldMap);
-
+        //新しい親オブジェクトを生成.
         GameObject parent = new GameObject("GeneratedMap");
 
         for (int y = 0; y < height; y++)
@@ -297,9 +279,13 @@ public class CSVloader : EditorWindow
                 int id = grid[x, y];
                 if (id > 0 && id < prefabSet.prefabs.Length && prefabSet.prefabs[id] != null)
                 {
-                    Vector3 pos = new Vector3(x, -y, 0) * cellSize;
-                    Vector3 startPos = new Vector3(GetWindowPos().lb.x, GetWindowPos().rt.y, 0);
                     GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(prefabSet.prefabs[id]);
+
+                    //画面の座標を取得.
+                    LBRT windowPos = PS_Func.GetWindowLBRT();
+
+                    Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * cellSize;
+                    Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);
                     obj.transform.position = startPos + pos;
                     obj.transform.localScale = Vector3.one * cellSize;
                     obj.transform.SetParent(parent.transform);

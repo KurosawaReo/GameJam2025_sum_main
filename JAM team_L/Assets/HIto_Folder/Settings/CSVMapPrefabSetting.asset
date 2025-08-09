@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df616bbff5e95a24bb6977fdc567d109, type: 3}
   m_Name: CSVMapPrefabSetting
   m_EditorClassIdentifier: 
-  prefabs: []
+  prefabs:
+  - {fileID: 0}
+  - {fileID: 7157965229037103819, guid: aa43ec8794b49cb4982126e9c90ba37e, type: 3}
+  - {fileID: 7157965229037103819, guid: 17167e59f2a38454b9270cf7a4b2ee38, type: 3}
+  - {fileID: 7157965229037103819, guid: 99b58bd9f9a953241a4c391cb884e105, type: 3}
