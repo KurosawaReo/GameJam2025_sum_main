@@ -1,6 +1,6 @@
 /*
    - MyLib.Position -
-   ver.2025/06/27
+   ver.2025/08/09
 */
 using UnityEngine;
 
@@ -36,21 +36,21 @@ namespace MyLib.Position
     {
         /// <summary>
         /// 画面の上下左右の座標を取得.
-        /// カメラがOrthographicモードの時限定.
+        /// (mainカメラがOrthographicモードの時限定)
         /// </summary>
         public static LBRT GetWindowLBRT()
         {
-            Camera cam = Camera.main;
+            Camera cam = Camera.main; //カメラを取得.
 
-            float height = cam.orthographicSize * 2f;
-            float width = height * cam.aspect;
+            Vector3 center = cam.transform.position;    //中央を求める.
+            float   height = cam.orthographicSize * 2f; //縦幅を求める(サイズからを計算)
+            float   width  = height * cam.aspect;       //縦幅を求める(アスペクト比から計算)
 
-            Vector3 center = cam.transform.position;
-
-            float left   = center.x - width  / 2f;
-            float right  = center.x + width  / 2f;
-            float bottom = center.y - height / 2f;
-            float top    = center.y + height / 2f;
+            //四方の座標を求める.
+            float left   = center.x - width /2f;
+            float right  = center.x + width /2f;
+            float bottom = center.y - height/2f;
+            float top    = center.y + height/2f;
 
             return new LBRT(left, bottom, right, top);
         }

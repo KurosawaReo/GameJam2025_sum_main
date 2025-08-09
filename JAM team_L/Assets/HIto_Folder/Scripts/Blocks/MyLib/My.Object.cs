@@ -7,12 +7,22 @@ using UnityEngine;
 using MyLib.Position;
 using MyLib.Variable;
 using MyLib.Inspector;
+using System;
 
 /// <summary>
 /// オブジェクト管理用の追加機能.
 /// </summary>
 namespace MyLib.Object
 {
+    /// <summary>
+    /// prefab用データ.
+    /// </summary>
+    [Serializable] public struct MyPrefab
+    {
+        public GameObject obj;    //prefab本体.
+        public GameObject parent; //親オブジェクト.
+    }
+
     /// <summary>
     /// コンポーネント集.
     /// </summary>
