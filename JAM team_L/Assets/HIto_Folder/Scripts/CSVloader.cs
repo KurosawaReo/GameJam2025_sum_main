@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-
 /// <summary>
 /// CSVからマップデータを読み書き・編集・プレハブ配置できるエディタウィンドウ
 /// </summary>
@@ -27,7 +26,7 @@ public class CSVloader : EditorWindow
     float cellSize = 1f;
 
     /// <summary>
-    /// マップデータの2D配列（タイルIDを格納）
+    /// マップデータの2D配列（タイルIDを格納） [x, y]
     /// </summary>
     int[,] grid;
 
@@ -88,6 +87,7 @@ public class CSVloader : EditorWindow
         height = EditorGUILayout.IntField("Height", height);
         cellSize = EditorGUILayout.FloatField("Cell Size", cellSize);
 
+        // サイズが変わったら新しく配列を作る
         if (grid == null || grid.GetLength(0) != width || grid.GetLength(1) != height)
         {
             grid = new int[width, height];
@@ -97,7 +97,7 @@ public class CSVloader : EditorWindow
     }
 
     /// <summary>
-    /// プレハブセットの選択とスライダーによるタイル選択
+    /// プレハブセットの選択とサムネイルによるタイル選択
     /// </summary>
     void DrawPrefabSelector()
     {
@@ -107,7 +107,7 @@ public class CSVloader : EditorWindow
         {
             EditorGUILayout.LabelField("Select Tile (Click Thumbnail):");
 
-            int columns = 4; // 1行に並べる数
+            int columns = 4;
             int count = prefabSet.prefabs.Length;
             int rows = Mathf.CeilToInt((float)count / columns);
 
@@ -143,7 +143,6 @@ public class CSVloader : EditorWindow
         EditorGUILayout.Space();
     }
 
-
     /// <summary>
     /// タイルマップグリッドを表示し、クリックで編集
     /// </summary>
@@ -154,19 +153,17 @@ public class CSVloader : EditorWindow
         for (int y = 0; y < height; y++)
         {
             EditorGUILayout.BeginHorizontal();
-
             for (int x = 0; x < width; x++)
             {
-                string label = grid[y, x].ToString();
+                string label = grid[x, y].ToString();
                 if (GUILayout.Button(label, GUILayout.Width(30), GUILayout.Height(30)))
                 {
                     if (Event.current.button == 1)
-                        grid[y, x] = 0; // 右クリックで消去
+                        grid[x, y] = 0; // 右クリックで消去
                     else
-                        grid[y, x] = selectTile; // 左クリックで配置
+                        grid[x, y] = selectTile; // 左クリックで配置
                 }
             }
-
             EditorGUILayout.EndHorizontal();
         }
 
@@ -219,7 +216,7 @@ public class CSVloader : EditorWindow
             {
                 string[] row = new string[width];
                 for (int x = 0; x < width; x++)
-                    row[x] = grid[y, x].ToString();
+                    row[x] = grid[x, y].ToString();
 
                 sw.WriteLine(string.Join(",", row));
             }
@@ -243,13 +240,13 @@ public class CSVloader : EditorWindow
         string[] lines = File.ReadAllLines(fillPath);
         height = lines.Length;
         width = lines[0].Split(',').Length;
-        grid = new int[height, width]; // ← 修正：高さ・幅の順番注意！
+        grid = new int[width, height];
 
         for (int y = 0; y < height; y++)
         {
             string[] values = lines[y].Split(',');
             for (int x = 0; x < width; x++)
-                int.TryParse(values[x], out grid[y, x]);
+                int.TryParse(values[x], out grid[x, y]);
         }
 
         Debug.Log("Map loaded from " + fillPath);
@@ -258,7 +255,6 @@ public class CSVloader : EditorWindow
     /// <summary>
     /// ウィンドウの左下と右上のワールド座標を取得
     /// </summary>
-    /// <returns></returns>
     public static (Vector3 lb, Vector3 rt) GetWindowPos()
     {
         Vector3 lb = Camera.main.ScreenToWorldPoint(Vector3.zero);
@@ -287,11 +283,11 @@ public class CSVloader : EditorWindow
         {
             for (int x = 0; x < width; x++)
             {
-                int id = grid[y, x];
+                int id = grid[x, y];
                 if (id > 0 && id < prefabSet.prefabs.Length && prefabSet.prefabs[id] != null)
                 {
                     Vector3 pos = new Vector3(x, -y, 0) * cellSize;
-                    Vector3 startPos = new Vector3 (GetWindowPos().lb.x, GetWindowPos().rt.y, 0);
+                    Vector3 startPos = new Vector3(GetWindowPos().lb.x, GetWindowPos().rt.y, 0);
                     GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(prefabSet.prefabs[id]);
                     obj.transform.position = startPos + pos;
                     obj.transform.localScale = Vector3.one * cellSize;
