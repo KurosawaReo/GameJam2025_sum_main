@@ -13,9 +13,30 @@ public class CSVMapLoader : MonoBehaviour
 
     void Start()
     {
-        string difficultyName = SceneManager.GetActiveScene().name;
+        string sceneName = SceneManager.GetActiveScene().name;
+        string difficultyName = ConvertSceneNameToDifficulty(sceneName);
         LoadMap(difficultyName);
     }
+
+    string ConvertSceneNameToDifficulty(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "StageEasy":
+                return "Easy";
+
+            case "StageNormal":
+                return "Normal";
+
+            case "StageHard":
+                return "Hard";
+
+            default:
+                Debug.LogWarning($"シーン名 '{sceneName}' に対応する難易度が見つかりません。デフォルトでEasyを使用します。");
+                return "Easy";
+        }
+    }
+
 
     void LoadMap(string difficulty)
     {
