@@ -1,27 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class Countuptimer : MonoBehaviour
+public class Serectnext : MonoBehaviour
 {
-    public float countup = 0.0f;
-
-    public Text timeText; 
+    public void PushStart()
+    {
+        // ëJà⁄Ç≥ÇπÇΩÇ¢ÉVÅ[ÉìñºÇéwíË
+        SceneManager.LoadScene("SerectScene");
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        countup += Time.deltaTime;
-
-        timeText.text = countup.ToString("f1") + "ïb";
+        
     }
 }

@@ -8,7 +8,7 @@ public class GoalGate : MonoBehaviour
     /// </summary>
     private void GameClear()
     {
-        SceneManager.LoadScene("TitleScene"); //ƒ^ƒCƒgƒ‹‚Ö.
+        
     }
 
     //‰½‚©‚ÉG‚ê‚½.

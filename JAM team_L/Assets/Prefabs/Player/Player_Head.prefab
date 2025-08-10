@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3226422820917852170}
@@ -106,10 +106,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOperation: 0
-  rotateSpeed: 1.5
+  rotateSpeed: 0.7
   playerBody: {fileID: 0}
-  headPosition: 1.5
-  lineLength: 30
+  headPosition: 1.2
+  lineLength: 20
+  lineThickness: 0.15
   lineRenderer: {fileID: 393068861524677735}
   neckLineRenderer: {fileID: 6656224437905495989}
   moveTime: 0.5

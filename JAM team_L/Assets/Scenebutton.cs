@@ -1,27 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Countuptimer : MonoBehaviour
+public class Scenebutton : MonoBehaviour
 {
-    public float countup = 0.0f;
+    public string SceneName;
 
-    public Text timeText; 
+    public FadeScene FadeScene;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        GetComponent<Button>().onClick.AddListener(() =>
+        {
+            FadeScene.LoadScene(SceneName);
+        });
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        countup += Time.deltaTime;
-
-        timeText.text = countup.ToString("f1") + "•b";
+        
     }
 }
