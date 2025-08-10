@@ -1,0 +1,94 @@
+{
+    "name": "PlayerHeadAction_Hokuto",
+    "maps": [
+        {
+            "name": "PlayerHead",
+            "id": "7045b28b-8f91-4ea6-93de-cf73c9dc266f",
+            "actions": [
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "26ee371c-08ba-4ed7-a899-91eaac1261c3",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Shot_Break",
+                    "type": "Button",
+                    "id": "95c1b97b-6a40-47a7-8434-3461d68ee892",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Release",
+                    "type": "Button",
+                    "id": "d62afa1d-2ba5-45b8-b14a-4ef6984e0a87",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pull",
+                    "type": "Button",
+                    "id": "6c0ebbc2-0d2f-4934-9898-28f52442abe2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "68b8dd6f-f6a2-4191-8e0b-068d9ab845d1",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4edc51a9-98af-4b68-8e23-87bfab758613",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shot_Break",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5704790d-06d3-4f12-a923-bbf9b96157b0",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Release",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e600f3c-3d9d-4b68-8647-2a062926b7aa",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pull",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

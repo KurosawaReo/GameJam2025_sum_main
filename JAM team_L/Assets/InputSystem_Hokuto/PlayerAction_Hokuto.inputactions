@@ -1,0 +1,94 @@
+{
+    "name": "PlayerAction_Hokuto",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "fb488430-d3cc-4d4d-a0c6-ec903e84f3ce",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "72f0d1f1-28ed-45af-9448-eb2dff13ab9c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "7b1ec842-340e-42f4-b36b-b8c65d154457",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reset",
+                    "type": "Button",
+                    "id": "90e09abb-0198-4b5f-90e3-678534e6fa3b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoBackTitle",
+                    "type": "Button",
+                    "id": "6585901b-755d-4c68-9aae-aa4f7a3ecc4b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "83d069c4-62a8-4a02-bf80-9b0ba3b22a90",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b76d9caf-9f18-4781-adab-4d60f548005e",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5057bfb-235a-41eb-8dc2-c776d41a2939",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "deac4795-40d7-4304-9145-6ccfb3ecb2b8",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoBackTitle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
