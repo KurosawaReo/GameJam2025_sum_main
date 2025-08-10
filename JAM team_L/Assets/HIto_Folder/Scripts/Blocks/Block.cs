@@ -7,6 +7,9 @@ using MyLib.Object;
 /// </summary>
 public class Block : MyObject
 {
+    [Header("- prefab -")]
+    [SerializeField] MyPrefab prfbBreak; //破壊アニメーション.
+
     [Header("- sprite -")]
     [SerializeField] Sprite[] imgBlock; //画像.
 
@@ -45,11 +48,7 @@ public class Block : MyObject
 
             default: Debug.LogError("[Error] 不正な値です。"); break;
         }
-    }
-
-    void Update()
-    {
-
+        BreakBlock();
     }
 
     /// <summary>
@@ -81,6 +80,12 @@ public class Block : MyObject
     /// </summary>
     public void BreakBlock()
     {
-        Destroy(gameObject); //仮.
+        //親オブジェクトを探す.
+        GameObject parent = GameObject.Find("EffectObjects");
+        //prefab生成.
+        var obj = Instantiate(prfbBreak.obj, parent.transform);
+        obj.transform.position = transform.position;
+
+        Destroy(gameObject); //ブロックは消滅.
     }
 }
