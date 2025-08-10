@@ -48,7 +48,6 @@ public class Block : MyObject
 
             default: Debug.LogError("[Error] ïsê≥Ç»ílÇ≈Ç∑ÅB"); break;
         }
-        BreakBlock();
     }
 
     /// <summary>

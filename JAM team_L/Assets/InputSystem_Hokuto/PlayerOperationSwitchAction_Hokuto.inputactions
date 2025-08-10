@@ -1,0 +1,34 @@
+{
+    "name": "PlayerOperationSwitchAction_Hokuto",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "d53ae2e2-3447-4c65-a5e3-0bab26dc3d76",
+            "actions": [
+                {
+                    "name": "Switch",
+                    "type": "Button",
+                    "id": "305af1e4-f6b2-44f9-8af3-d5057eb97e80",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b9a5dd41-5a42-468f-9708-288e49708af2",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Switch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
