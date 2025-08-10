@@ -1,13 +1,13 @@
 ﻿/*
    - MyLib.Object -
-   ver.2025/08/09
+   ver.2025/08/10
 */
 using UnityEngine;
+using System;
 
 using MyLib.Position;
 using MyLib.Variable;
 using MyLib.Inspector;
-using System;
 
 /// <summary>
 /// オブジェクト管理用の追加機能.
