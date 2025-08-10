@@ -6,18 +6,40 @@ using System.IO;
 
 public class CSVMapLoader : MonoBehaviour
 {
-    public Transform mapRoot; // マップを生成する親オブジェクト
-    public CSVMapPrefabSetting prefabSet; // プレハブの設定（ScriptableObject）
+    public Transform mapRoot; 
+    public CSVMapPrefabSetting prefabSet;
+    public float cellSize = 1f; // セルサイズを追加
+    public Vector3 startPos;    // スタート位置をインスペクタで設定（エディタと同じ基準にする）
 
     void Start()
     {
-        string difficultyName = SceneManager.GetActiveScene().name; // シーン名が難易度名
+        string sceneName = SceneManager.GetActiveScene().name;
+        string difficultyName = ConvertSceneNameToDifficulty(sceneName);
         LoadMap(difficultyName);
     }
 
+    string ConvertSceneNameToDifficulty(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "StageEasy":
+                return "Easy";
+
+            case "StageNormal":
+                return "Normal";
+
+            case "StageHard":
+                return "Hard";
+
+            default:
+                Debug.LogWarning($"シーン名 '{sceneName}' に対応する難易度が見つかりません。デフォルトでEasyを使用します。");
+                return "Easy";
+        }
+    }
+
+
     void LoadMap(string difficulty)
     {
-        // CSVファイル名を "Maps/Easy.csv" のようにしておく
         string filePath = Path.Combine(Application.streamingAssetsPath, "Maps", difficulty + ".csv");
 
         if (!File.Exists(filePath))
@@ -42,7 +64,8 @@ public class CSVMapLoader : MonoBehaviour
                         GameObject prefab = prefabSet.prefabs[id];
                         if (prefab != null)
                         {
-                            Instantiate(prefab, new Vector3(x, -y, 0), Quaternion.identity, mapRoot);
+                            Vector3 pos = new Vector3(x + 0.5f, -y - 0.5f, 0) * cellSize;
+                            Instantiate(prefab, startPos + pos, Quaternion.identity, mapRoot);
                         }
                     }
                 }
