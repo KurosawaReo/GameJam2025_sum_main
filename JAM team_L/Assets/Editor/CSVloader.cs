@@ -156,15 +156,32 @@ public class CSVloader : EditorWindow
             EditorGUILayout.BeginHorizontal();
             for (int x = 0; x < width; x++)
             {
-                string label = grid[x, y].ToString();
-//              if (GUILayout.Button(label, GUILayout.Width(30), GUILayout.Height(30)))
-                if (GUILayout.RepeatButton(label, GUILayout.Width(30), GUILayout.Height(30)))
+                int id = grid[x, y];
+
+                // 背景色を設定
+                Color bgColor;
+                if (id == 0)
+                    bgColor = new Color(0.9f, 0.9f, 0.9f); // 空白は薄いグレー
+                else if (id == selectTile)
+                    bgColor = new Color(0.7f, 1f, 0.7f); // 選択中は薄い緑
+                else
+                    bgColor = Color.HSVToRGB((id * 0.15f) % 1f, 0.5f, 1f); // IDごとに色分け
+
+                GUI.backgroundColor = bgColor;
+
+                // ボタン描画
+                string label = id.ToString();
+                if (GUILayout.RepeatButton(label, GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     if (Event.current.button == 1)
                         grid[x, y] = 0; // 右クリックで消去
                     else
                         grid[x, y] = selectTile; // 左クリックで配置
                 }
+
+                // 背景色リセット
+                GUI.backgroundColor = Color.white;
+
             }
             EditorGUILayout.EndHorizontal();
         }
