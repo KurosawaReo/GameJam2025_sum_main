@@ -4,24 +4,24 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Countuptimer : MonoBehaviour
+public class CountUpTimer : MonoBehaviour
 {
     public float countup = 0.0f;
 
-    public Text timeText; 
+    public Text timeText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    bool isMove = true; //タイマーを動かすかどうか.
+    //set.
+    public bool IsMove { set => isMove = value; }
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        //動作中のみ.
+        if (isMove)
+        {
+            countup += Time.deltaTime;
 
-        countup += Time.deltaTime;
-
-        timeText.text = countup.ToString("f1") + "秒";
+            timeText.text = countup.ToString("f1") + "秒";
+        }
     }
 }

@@ -61,4 +61,13 @@ public class PlayerOperationSwitch_Hokuto : MonoBehaviour
             body.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         }
     }
+
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[‚Ì‘€ì‚ğ–³Œø‚É‚·‚é.
+    /// </summary>
+    public void PlayerNoOpe()
+    {
+        body.isOperation = false; //‘Ì.
+        head.isOperation = false; //“ª.
+    }
 }

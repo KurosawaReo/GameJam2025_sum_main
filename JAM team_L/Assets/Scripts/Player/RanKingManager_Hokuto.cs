@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class RanKingManager_Hokuto : MonoBehaviour
 {
-    [SerializeField] Countuptimer timer;
+    [SerializeField] CountUpTimer timer;
 
     public float nowTime;
     public float[] time = new float[5];
