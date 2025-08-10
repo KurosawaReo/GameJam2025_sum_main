@@ -1,64 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.SceneManagement;
+using System.IO;
 
-public class MapLoader : MonoBehaviour
+public class CSVMapLoader : MonoBehaviour
 {
+    public Transform mapRoot; 
     public CSVMapPrefabSetting prefabSet;
-    public string mapFileName = "Stage1"; // 拡張子不要（Resources内のファイル名）
-
-    public float cellSize = 1f;
+    public float cellSize = 1f; // セルサイズを追加
+    public Vector3 startPos;    // スタート位置をインスペクタで設定（エディタと同じ基準にする）
 
     void Start()
     {
-        LoadAndGenerateMap(mapFileName);
+        string sceneName = SceneManager.GetActiveScene().name;
+        string difficultyName = ConvertSceneNameToDifficulty(sceneName);
+        LoadMap(difficultyName);
     }
 
-    void LoadAndGenerateMap(string fileName)
+    string ConvertSceneNameToDifficulty(string sceneName)
     {
-        // CSVファイル読み込み（Resources/ の中）
-        TextAsset csvFile = Resources.Load<TextAsset>(fileName);
-        if (csvFile == null)
+        switch (sceneName)
         {
-            Debug.LogError("CSVファイルが見つかりません: " + fileName);
+            case "StageEasy":
+                return "Easy";
+
+            case "StageNormal":
+                return "Normal";
+
+            case "StageHard":
+                return "Hard";
+
+            default:
+                Debug.LogWarning($"シーン名 '{sceneName}' に対応する難易度が見つかりません。デフォルトでEasyを使用します。");
+                return "Easy";
+        }
+    }
+
+
+    void LoadMap(string difficulty)
+    {
+        string filePath = Path.Combine(Application.streamingAssetsPath, "Maps", difficulty + ".csv");
+
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"CSVファイルが見つかりません: {filePath}");
             return;
         }
 
-        string[] lines = csvFile.text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        int height = lines.Length;
-        int width = lines[0].Split(',').Length;
+        string[] lines = File.ReadAllLines(filePath);
 
-        int[,] grid = new int[width, height];
-
-        // CSV -> grid 変換
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < lines.Length; y++)
         {
-            string[] values = lines[y].Split(',');
-            for (int x = 0; x < width; x++)
+            string[] cells = lines[y].Split(',');
+
+            for (int x = 0; x < cells.Length; x++)
             {
-                int.TryParse(values[x], out grid[x, y]);
-            }
-        }
-
-        // マップ生成
-        GenerateMap(grid, width, height);
-    }
-
-    void GenerateMap(int[,] grid, int width, int height)
-    {
-        GameObject parent = new GameObject("GeneratedMap");
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int id = grid[x, y];
-                if (id > 0 && id < prefabSet.prefabs.Length && prefabSet.prefabs[id] != null)
+                int id;
+                if (int.TryParse(cells[x], out id))
                 {
-                    GameObject obj = Instantiate(prefabSet.prefabs[id], parent.transform);
-                    obj.transform.position = new Vector3(x + 0.5f, -y - 0.5f, 0) * cellSize;
-                    obj.transform.localScale = Vector3.one * cellSize;
+                    if (id >= 0 && id < prefabSet.prefabs.Length)
+                    {
+                        GameObject prefab = prefabSet.prefabs[id];
+                        if (prefab != null)
+                        {
+                            Vector3 pos = new Vector3(x + 0.5f, -y - 0.5f, 0) * cellSize;
+                            Instantiate(prefab, startPos + pos, Quaternion.identity, mapRoot);
+                        }
+                    }
                 }
             }
         }
+
+        Debug.Log($"マップロード完了: {difficulty}");
     }
 }
