@@ -13,6 +13,15 @@ namespace Global
         Carry,   //運べる.
         Terrain, //地形.
     }
+    /// <summary>
+    /// ステージの種類.
+    /// </summary>
+    public enum Stage
+    {
+        Easy,
+        Normal,
+        Hard
+    }
 
     /// <summary>
     /// Global定数.

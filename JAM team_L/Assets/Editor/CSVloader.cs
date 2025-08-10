@@ -44,7 +44,7 @@ public class CSVloader : EditorWindow
     /// <summary>
     /// CSVファイルの保存先パス
     /// </summary>
-    string fillPath = "Assets/Hito_Folder/Resources/Maps/map.csv";
+    string filePath;
 
     #endregion
 
@@ -67,6 +67,7 @@ public class CSVloader : EditorWindow
 
     private void OnGUI()
     {
+        PathCSV();
         DrawSettings();
         DrawPrefabSelector();
         DrawMapGrid();
@@ -76,6 +77,17 @@ public class CSVloader : EditorWindow
     #endregion
 
     #region GUI 設定
+
+    /// <summary>
+    /// CSVファイルの指定.
+    /// </summary>
+    void PathCSV()
+    {
+        //switch ()
+        //{
+        //}
+        filePath = "Assets/Resources/map.csv"; //Resources直下じゃないとダメそう?
+    }
 
     /// <summary>
     /// マップサイズなどの基本設定項目
@@ -229,7 +241,7 @@ public class CSVloader : EditorWindow
     /// </summary>
     void SaveMap()
     {
-        using (StreamWriter sw = new StreamWriter(fillPath))
+        using (StreamWriter sw = new StreamWriter(filePath))
         {
             for (int y = 0; y < height; y++)
             {
@@ -242,7 +254,7 @@ public class CSVloader : EditorWindow
         }
 
         AssetDatabase.Refresh();
-        Debug.Log("Map saved to " + fillPath);
+        Debug.Log("Map saved to " + filePath);
     }
 
     /// <summary>
@@ -250,13 +262,13 @@ public class CSVloader : EditorWindow
     /// </summary>
     void LoadMap()
     {
-        if (!File.Exists(fillPath))
+        if (!File.Exists(filePath))
         {
-            Debug.LogError("マップファイルが見つかりません: " + fillPath);
+            Debug.LogError("マップファイルが見つかりません: " + filePath);
             return;
         }
 
-        string[] lines = File.ReadAllLines(fillPath);
+        string[] lines = File.ReadAllLines(filePath);
         height = lines.Length;
         width = lines[0].Split(',').Length;
         grid = new int[width, height];
@@ -268,7 +280,7 @@ public class CSVloader : EditorWindow
                 int.TryParse(values[x], out grid[x, y]);
         }
 
-        Debug.Log("Map loaded from " + fillPath);
+        Debug.Log("Map loaded from " + filePath);
     }
 
     /// <summary>
