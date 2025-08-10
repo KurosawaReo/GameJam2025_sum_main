@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 978c1de1539dec946abdac2f063fe764
+<<<<<<<< HEAD:JAM team_L/Assets/HIto_Folder/Resources/map.csv.meta
+guid: 6402b1bbfa0b42546af8bb242aff7f11
+========
+guid: d78f9b54e4c9234428481d50e3350689
+>>>>>>>> main:JAM team_L/Assets/HIto_Folder/Resources/Maps/map.csv.meta
 TextScriptImporter:
   externalObjects: {}
   userData: 
