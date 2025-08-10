@@ -44,7 +44,7 @@ public class CSVloader : EditorWindow
     /// <summary>
     /// CSVファイルの保存先パス
     /// </summary>
-    string fillPath = "Assets/Hito_Folder/Resources/map.csv";
+    string fillPath = "Assets/Hito_Folder/Resources/Maps/map.csv";
 
     #endregion
 
