@@ -1,9 +1,9 @@
-using UnityEditor.ShaderGraph;
+#if false
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class SelecManager : MonoBehaviour
+public class SelectManager : MonoBehaviour
 {
     PlayerAction_Hokuto controls;
     Vector2 moveInput;
@@ -103,3 +103,4 @@ public class SelecManager : MonoBehaviour
 
     }
 }
+#endif

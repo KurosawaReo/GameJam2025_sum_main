@@ -21,7 +21,7 @@ public class CountUpTimer : MonoBehaviour
         {
             countup += Time.deltaTime;
 
-            timeText.text = countup.ToString("f1") + "•b";
+            timeText.text = "Timer: " + countup.ToString("f1") + "•b";
         }
     }
 }

@@ -7,7 +7,7 @@ using System;
 
 using MyLib.Position;
 using MyLib.Variable;
-using MyLib.Inspector;
+
 
 /// <summary>
 /// オブジェクト管理用の追加機能.
@@ -51,13 +51,13 @@ namespace MyLib.Object
         [Space(4)]
         [SerializeField] 
             private bool    isAutoInit = true;                      //自動で値を初期化するか.
-        [InspectorDisable("isAutoInit"), SerializeField] 
+        [SerializeField] 
             private Vector2 initPos;                                //初期座標.
-        [InspectorDisable("isAutoInit"), SerializeField] 
+        [SerializeField] 
             private Vector2 initFacing;                             //初期向き.
-        [InspectorDisable("isAutoInit"), SerializeField] 
+        [SerializeField] 
             private bool    initActive = true;                      //有効かどうか.
-        [InspectorDisable("isAutoInit"), SerializeField] 
+        [SerializeField] 
             private bool    initFlip   = false;                     //反転するかどうか.
 
         [SerializeField] private Vector2 size = new Vector2(1, 1);  //当たり判定サイズ.

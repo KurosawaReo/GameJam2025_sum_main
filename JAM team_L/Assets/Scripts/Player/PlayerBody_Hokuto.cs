@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using JetBrains.Annotations;
 
 public class PlayerBody_Hokuto : MonoBehaviour
+
 {
     [SerializeField] public bool isOperation = true;
 
