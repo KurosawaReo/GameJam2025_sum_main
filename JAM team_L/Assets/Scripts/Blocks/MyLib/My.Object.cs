@@ -1,13 +1,13 @@
 ﻿/*
    - MyLib.Object -
-   ver.2025/08/10
+   ver.2025/08/13
 */
 using UnityEngine;
 using System;
 
 using MyLib.Position;
 using MyLib.Variable;
-
+using MyLib.Inspector;
 
 /// <summary>
 /// オブジェクト管理用の追加機能.
@@ -51,13 +51,13 @@ namespace MyLib.Object
         [Space(4)]
         [SerializeField] 
             private bool    isAutoInit = true;                      //自動で値を初期化するか.
-        [SerializeField] 
+        [SerializeField, InspectorDisable("isAutoInit")] 
             private Vector2 initPos;                                //初期座標.
-        [SerializeField] 
+        [SerializeField, InspectorDisable("isAutoInit")] 
             private Vector2 initFacing;                             //初期向き.
-        [SerializeField] 
+        [SerializeField, InspectorDisable("isAutoInit")] 
             private bool    initActive = true;                      //有効かどうか.
-        [SerializeField] 
+        [SerializeField, InspectorDisable("isAutoInit")] 
             private bool    initFlip   = false;                     //反転するかどうか.
 
         [SerializeField] private Vector2 size = new Vector2(1, 1);  //当たり判定サイズ.
