@@ -2,8 +2,8 @@
    - MyLib.InspectorEditor -
    ver.2025/08/13
 
-   このファイルは"Editor"フォルダに入れること.
-   入れなくても動作はするが、ビルド時にエラーを吐いて詰んでしまう.
+   セットで使用: MyLib.Inspector
+   フォルダ: Editorに入れる
 */
 using System;
 using System.Collections.Generic;

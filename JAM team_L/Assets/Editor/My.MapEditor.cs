@@ -1,0 +1,346 @@
+/*
+   - MyLib.MapEditor -
+   ver.2025/08/13
+
+   フォルダ: Editorに入れる
+*/
+using UnityEngine;
+using UnityEditor;
+using System.IO;
+
+using MyLib.Position;
+using MyLib.RegisterScript;
+
+/// <summary>
+/// マップ拡張エディタを追加する.
+/// </summary>
+namespace MyLib.MapEditor
+{
+    /// <summary>
+    /// CSVでマップデータを管理する
+    /// </summary>
+    public class MapEditor : EditorWindow
+    {
+        MapParts mapParts; //パーツとして使うprefab(ScriptableObject)
+
+        int[,]  mapData;   //マップの2D配列(番号で何を置くか管理)
+        int     gridWid;   //グリッドの横幅.
+        int     gridHei;   //グリッドの縦幅.
+        float   gridSize;  //グリッドのサイズ.
+        int     selectNo;  //現在選択中のprefab番号.
+        Vector2 scrollPos; //スクロール位置.
+
+        string  filePath;  //CSVファイルの保存先パス.
+
+        /// <summary>
+        /// エディタ画面を開く.
+        /// </summary>
+        [MenuItem("MyTools/CSV Map Editor")]
+        public static void OpenWindow()
+        {
+            GetWindow<MapEditor>("CSV Map Editor");
+        }
+
+        /// <summary>
+        /// 初期化処理, エディタ版のStart()のようなもの.
+        /// </summary>
+        private void OnEnable()
+        {
+            mapData = new int[gridWid, gridHei];
+            filePath = "Assets/Resources/map.csv"; //初期パス.
+        }
+        /// <summary>
+        /// GUI設定.
+        /// </summary>
+        private void OnGUI()
+        {
+            MakeSettings();
+            MakePrefabSelector();
+            MakeMapGrid();
+            MakeButtons();
+        }
+
+        /// <summary>
+        /// エディタで設定できる欄を作る.
+        /// </summary>
+        void MakeSettings()
+        {
+            DrawSeparator();
+            EditorGUILayout.LabelField("- Settings -", EditorStyles.boldLabel); //ラベルを表示する.
+
+            filePath = EditorGUILayout.TextField ("File Path",   filePath);
+            EditorGUILayout.Space(3); //GUIのスペースを作る.
+            gridWid  = EditorGUILayout.IntField  ("Grid Width",  gridWid);
+            gridHei  = EditorGUILayout.IntField  ("Gird Height", gridHei);
+            gridSize = EditorGUILayout.FloatField("Grid Size",   gridSize);
+            EditorGUILayout.Space(); //GUIのスペースを作る.
+
+            //サイズが変わったら新しく配列を作る.
+            if (mapData == null || mapData.GetLength(0) != gridWid || mapData.GetLength(1) != gridHei)
+            {
+                mapData = new int[gridWid, gridHei];
+            }
+        }
+
+        /// <summary>
+        /// 設置するprefabを選択する欄を作る.
+        /// </summary>
+        void MakePrefabSelector()
+        {
+            DrawSeparator();
+            EditorGUILayout.LabelField("- Parts -", EditorStyles.boldLabel); //ラベルを表示する.
+
+            mapParts = (MapParts)EditorGUILayout.ObjectField("Map Parts", mapParts, typeof(MapParts), false);
+
+            if (mapParts != null && mapParts.prefabs != null && mapParts.prefabs.Length > 0)
+            {
+                EditorGUILayout.Space(3);
+
+                int columns = 4;
+                int count = mapParts.prefabs.Length;
+                int rows = Mathf.CeilToInt((float)count / columns);
+
+                for (int y = 0; y < rows; y++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    for (int x = 0; x < columns; x++)
+                    {
+                        int index = y * columns + x;
+                        if (index >= count) break;
+
+                        GameObject prefab = mapParts.prefabs[index];
+                        if (prefab == null) continue;
+
+                        Texture2D preview = AssetPreview.GetAssetPreview(prefab);
+                        if (preview == null) preview = AssetPreview.GetMiniThumbnail(prefab);
+
+                        if (GUILayout.Button(preview, GetTileButtonStyle(index), GUILayout.Width(64), GUILayout.Height(64)))
+                        {
+                            selectNo = index;
+                        }
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+    //          EditorGUILayout.LabelField($"Current Tile ID: {selectNo}");
+            }
+            else
+            {
+                //メッセージボックスを表示する.
+                EditorGUILayout.HelpBox("使用するパーツをセットしてください。", MessageType.None, false); //wideをfalseに.
+            }
+
+            EditorGUILayout.Space();
+        }
+
+        /// <summary>
+        /// CSVの値をいじるグリッドを作る.
+        /// </summary>
+        void MakeMapGrid()
+        {
+            DrawSeparator();
+            EditorGUILayout.LabelField("- Map Data -", EditorStyles.boldLabel); //ラベルを表示する.
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+            for (int y = 0; y < gridHei; y++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int x = 0; x < gridWid; x++)
+                {
+                    int id = mapData[x, y];
+
+                    //セルごとの色を設定.
+                    Color bgColor;
+                    if (id == 0)
+                    {
+                        bgColor = new Color(0.7f, 0.7f, 0.7f);
+                    }
+                    else if (id == selectNo)
+                    {
+                        bgColor = Color.HSVToRGB((id * 0.15f) % 1f, 0.5f, 1f); //IDごとに色分け.
+                    }
+                    else
+                    {
+                        bgColor = new Color(1.0f, 1.0f, 1.0f);
+                    }
+                    GUI.backgroundColor = bgColor; //色反映.
+
+                    // ボタン描画
+                    string label = id.ToString();
+                    if (GUILayout.RepeatButton(label, GUILayout.Width(20), GUILayout.Height(20)))
+    //                if (GUILayout.SelectionGrid(0, true, 1, GUIStyle.none))
+                    {
+                        if (Event.current.button == 1)
+                            mapData[x, y] = 0; // 右クリックで消去
+                        else
+                            mapData[x, y] = selectNo; // 左クリックで配置
+                        GenerateMap();
+                    }
+
+                    // 背景色リセット
+                    GUI.backgroundColor = Color.white;
+
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.Space();
+        }
+
+        /// <summary>
+        /// 操作用ボタン(Clear, Save, Load)
+        /// </summary>
+        void MakeButtons()
+        {
+            //Begin～Endの中で、均等に埋まるようにボタンを配置してくれる.
+
+            EditorGUILayout.BeginHorizontal(); //横幅の始まり.
+
+            if (GUILayout.Button("Clear Map"))
+            {
+                mapData = new int[gridWid, gridHei];
+                GenerateMap();
+            }
+            if (GUILayout.Button("Save Map"))
+            {
+                SaveMap();
+            }
+            if (GUILayout.Button("Load Map"))
+            {
+                LoadMap();
+                GenerateMap();
+            }
+
+            EditorGUILayout.EndHorizontal(); //横幅の終わり.
+        }
+
+        /// <summary>
+        /// CSV形式で保存.
+        /// </summary>
+        void SaveMap()
+        {
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                for (int y = 0; y < gridHei; y++)
+                {
+                    string[] row = new string[gridWid];
+                    for (int x = 0; x < gridWid; x++)
+                        row[x] = mapData[x, y].ToString();
+
+                    sw.WriteLine(string.Join(",", row));
+                }
+            }
+
+            AssetDatabase.Refresh();
+            Debug.Log("Map saved to " + filePath);
+        }
+
+        /// <summary>
+        /// CSVファイル読み込み.
+        /// </summary>
+        void LoadMap()
+        {
+            if (!File.Exists(filePath))
+            {
+                Debug.LogError("マップファイルが見つかりません: " + filePath);
+                return;
+            }
+
+            string[] lines = File.ReadAllLines(filePath);
+            gridHei = lines.Length;
+            gridWid = lines[0].Split(',').Length;
+            mapData = new int[gridWid, gridHei];
+
+            for (int y = 0; y < gridHei; y++)
+            {
+                string[] values = lines[y].Split(',');
+                for (int x = 0; x < gridWid; x++)
+                    int.TryParse(values[x], out mapData[x, y]);
+            }
+
+            Debug.Log("Map loaded from " + filePath);
+        }
+
+        /// <summary>
+        /// prefabを設置する.
+        /// </summary>
+        void GenerateMap()
+        {
+            if (mapParts == null || mapParts.prefabs == null || mapParts.prefabs.Length == 0)
+            {
+                Debug.LogError("マップ生成に使うプレファブがありません");
+                return;
+            }
+
+            //古い親オブジェクトを削除.
+            GameObject oldMap = GameObject.Find("GeneratedMap");
+            if (oldMap != null)
+                DestroyImmediate(oldMap);
+            //新しい親オブジェクトを生成.
+            GameObject parent = new GameObject("GeneratedMap");
+
+            for (int y = 0; y < gridHei; y++)
+            {
+                for (int x = 0; x < gridWid; x++)
+                {
+                    int id = mapData[x, y];
+                    if (id > 0 && id < mapParts.prefabs.Length && mapParts.prefabs[id] != null)
+                    {
+                        GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(mapParts.prefabs[id]);
+
+                        //画面の座標を取得.
+                        LBRT windowPos = PS_Func.GetWindowLBRT();
+
+                        Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * gridSize;
+                        Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);
+                        obj.transform.position = startPos + pos;
+                        obj.transform.localScale = Vector3.one * gridSize;
+                        obj.transform.SetParent(parent.transform);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 区切り線を描画する.
+        /// </summary>
+        private void DrawSeparator()
+        {
+            Color color = EditorGUIUtility.isProSkin
+            ? new Color(0.3f, 0.3f, 0.3f) // Dark Skin
+            : new Color(0.6f, 0.6f, 0.6f); // Light Skin
+
+            Rect rect = EditorGUILayout.GetControlRect(false, 2);
+            EditorGUI.DrawRect(rect, color);
+
+            EditorGUILayout.Space(3); //スペースを入れる.
+        }
+
+        /// <summary>
+        /// ボタンのスタイル設定.
+        /// </summary>
+        private GUIStyle GetTileButtonStyle(int index)
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.button);
+
+            //選択中のボタンなら.
+            if (index == selectNo)
+            {
+                //選択中は背景を少し明るく＆枠を付ける.
+                style.normal.background = Texture2D.whiteTexture;
+                style.normal.textColor = Color.white;
+            
+                //背景色を設定(DrawTextureは不要)
+                GUI.backgroundColor = new Color(0.5f, 0.8f, 1.0f);
+            }
+            else
+            {
+                GUI.backgroundColor = Color.white; //そのまま.
+            }
+
+            return style;
+        }
+    }
+}

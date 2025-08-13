@@ -20,8 +20,8 @@ public class PlayerBody_Hokuto : MonoBehaviour
     public bool isJump;
     Vector3 spownPosition;
     [SerializeField] bool isFront = true;
-    [SerializeField] float soundTimePlus = 5f;
-    float soundTime = 0;
+//  [SerializeField] float soundTimePlus = 5f;
+//  float soundTime = 0;
 
     PlayerAction_Hokuto controls;
     Vector2 moveInput;

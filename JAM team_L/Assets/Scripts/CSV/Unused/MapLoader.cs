@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+#if false
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using MyLib.Position;
 
 public class CSVMapLoader : MonoBehaviour
 {
-    public Transform mapRoot; 
-    public CSVMapPrefabSetting prefabSet;
+    public GameObject parent; 
+    public MapPrefabParts prefabSet;
     public float cellSize = 1f; // セルサイズを追加
-    public Vector3 startPos;    // スタート位置をインスペクタで設定（エディタと同じ基準にする）
+
+    LBRT windowPos; //ウィンドウ座標保存用.
 
     void Start()
     {
+        windowPos = PS_Func.GetWindowLBRT();
+
         string sceneName = SceneManager.GetActiveScene().name;
         string difficultyName = ConvertSceneNameToDifficulty(sceneName);
         LoadMap(difficultyName);
@@ -64,8 +67,9 @@ public class CSVMapLoader : MonoBehaviour
                         GameObject prefab = prefabSet.prefabs[id];
                         if (prefab != null)
                         {
-                            Vector3 pos = new Vector3(x + 0.5f, -y - 0.5f, 0) * cellSize;
-                            Instantiate(prefab, startPos + pos, Quaternion.identity, mapRoot);
+                            Vector3 addPos = new Vector3(x + 0.5f, -y - 0.5f, 0) * cellSize;
+                            Vector3 pos = new Vector3(windowPos.left, windowPos.top, 0);
+                            Instantiate(prefab, pos + addPos, Quaternion.identity, parent.transform);
                         }
                     }
                 }
@@ -75,3 +79,4 @@ public class CSVMapLoader : MonoBehaviour
         Debug.Log($"マップロード完了: {difficulty}");
     }
 }
+#endif

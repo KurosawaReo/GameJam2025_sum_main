@@ -2,9 +2,11 @@
    - MyLib.Inspector -
    ver.2025/08/13
 
+   セットで使用: MyLib.InspectorEditor
+
    このファイルはどこのフォルダに入れてもok.
 
-   ↓参考サイト.
+   ↓参考サイト
    https://mu-777.hatenablog.com/entry/2022/09/04/113850
 */
 using System;
