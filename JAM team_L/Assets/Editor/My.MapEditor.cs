@@ -48,6 +48,7 @@ namespace MyLib.MapEditor
         {
             mapData = new int[gridWid, gridHei];
             filePath = "Assets/Resources/map.csv"; //初期パス.
+            gridSize = 1;
         }
         /// <summary>
         /// GUI設定.
@@ -76,9 +77,39 @@ namespace MyLib.MapEditor
             EditorGUILayout.Space(); //GUIのスペースを作る.
 
             //サイズが変わったら新しく配列を作る.
-            if (mapData == null || mapData.GetLength(0) != gridWid || mapData.GetLength(1) != gridHei)
+            if (mapData.GetLength(0) != gridWid || mapData.GetLength(1) != gridHei)
+            {
+                //サイズが小さい方を優先.
+                int minX = Mathf.Min(gridWid, mapData.GetLength(0));
+                int minY = Mathf.Min(gridHei, mapData.GetLength(1));
+                //サイズが0でなければ.
+                if (minX > 0 && minY > 0)
+                {
+                    int[,] tmpData = new int[minX, minY];
+                    //仮保存.
+                    for (int y = 0; y < minY; y++) {
+                        for (int x = 0; x < minX; x++)
+                        {
+                            tmpData[x,y] = mapData[x,y];
+                        }
+                    }
+                    //サイズ変更.
+                    mapData = new int[gridWid, gridHei];
+                    //元のデータを反映.
+                    for (int y = 0; y < minY; y++) {
+                        for (int x = 0; x < minX; x++)
+                        {
+                            mapData[x,y] = tmpData[x,y];
+                        }
+                    }
+                }
+                GenerateMap();
+            }
+            //マップがまだないなら作成.
+            else if(mapData == null)
             {
                 mapData = new int[gridWid, gridHei];
+                GenerateMap();
             }
         }
 
@@ -127,9 +158,10 @@ namespace MyLib.MapEditor
             else
             {
                 //メッセージボックスを表示する.
-                EditorGUILayout.HelpBox("使用するパーツをセットしてください。", MessageType.None, false); //wideをfalseに.
+                EditorGUILayout.HelpBox("使用するパーツをセットしてください。", MessageType.None, false);
             }
 
+            GUI.backgroundColor = Color.white; //背景色リセット.
             EditorGUILayout.Space();
         }
 
@@ -141,51 +173,58 @@ namespace MyLib.MapEditor
             DrawSeparator();
             EditorGUILayout.LabelField("- Map Data -", EditorStyles.boldLabel); //ラベルを表示する.
 
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-
-            for (int y = 0; y < gridHei; y++)
+            //マップファイルが存在するなら.
+            if (File.Exists(filePath))
             {
-                EditorGUILayout.BeginHorizontal();
-                for (int x = 0; x < gridWid; x++)
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+                for (int y = 0; y < gridHei; y++)
                 {
-                    int id = mapData[x, y];
+                    EditorGUILayout.BeginHorizontal();
+                    for (int x = 0; x < gridWid; x++)
+                    {
+                        int id = mapData[x, y];
 
-                    //セルごとの色を設定.
-                    Color bgColor;
-                    if (id == 0)
-                    {
-                        bgColor = new Color(0.7f, 0.7f, 0.7f);
-                    }
-                    else if (id == selectNo)
-                    {
-                        bgColor = Color.HSVToRGB((id * 0.15f) % 1f, 0.5f, 1f); //IDごとに色分け.
-                    }
-                    else
-                    {
-                        bgColor = new Color(1.0f, 1.0f, 1.0f);
-                    }
-                    GUI.backgroundColor = bgColor; //色反映.
-
-                    // ボタン描画
-                    string label = id.ToString();
-                    if (GUILayout.RepeatButton(label, GUILayout.Width(20), GUILayout.Height(20)))
-    //                if (GUILayout.SelectionGrid(0, true, 1, GUIStyle.none))
-                    {
-                        if (Event.current.button == 1)
-                            mapData[x, y] = 0; // 右クリックで消去
+                        //セルごとの色を設定.
+                        Color bgColor;
+                        if (id == 0)
+                        {
+                            bgColor = new Color(0.7f, 0.7f, 0.7f);
+                        }
+                        else if (id == selectNo)
+                        {
+                            bgColor = Color.HSVToRGB((id*0.15f) % 1f, 0.5f, 1f); //IDごとに色分け.
+                        }
                         else
-                            mapData[x, y] = selectNo; // 左クリックで配置
-                        GenerateMap();
+                        {
+                            bgColor = new Color(1.0f, 1.0f, 1.0f);
+                        }
+                        GUI.backgroundColor = bgColor; //色反映.
+
+                        // ボタン描画
+                        string label = id.ToString();
+                        if (GUILayout.RepeatButton(label, GUILayout.Width(20), GUILayout.Height(20)))
+                        {
+                            if (Event.current.button == 1)
+                                mapData[x, y] = 0; // 右クリックで消去
+                            else
+                                mapData[x, y] = selectNo; // 左クリックで配置
+                            GenerateMap();
+                        }
+
+                        // 背景色リセット
+                        GUI.backgroundColor = Color.white;
                     }
-
-                    // 背景色リセット
-                    GUI.backgroundColor = Color.white;
-
+                    EditorGUILayout.EndHorizontal();
                 }
-                EditorGUILayout.EndHorizontal();
-            }
 
-            EditorGUILayout.EndScrollView();
+                EditorGUILayout.EndScrollView();
+            }
+            //マップファイルが存在しないなら.
+            else
+            {
+                EditorGUILayout.HelpBox("CSVファイルが存在しません", MessageType.Warning);
+            }
             EditorGUILayout.Space();
         }
 
@@ -221,6 +260,9 @@ namespace MyLib.MapEditor
         /// </summary>
         void SaveMap()
         {
+            //ファイルがないなら中断.
+            if (!File.Exists(filePath)) { return; }
+
             using (StreamWriter sw = new StreamWriter(filePath))
             {
                 for (int y = 0; y < gridHei; y++)
@@ -242,17 +284,16 @@ namespace MyLib.MapEditor
         /// </summary>
         void LoadMap()
         {
-            if (!File.Exists(filePath))
-            {
-                Debug.LogError("マップファイルが見つかりません: " + filePath);
-                return;
-            }
+            //ファイルがないなら中断.
+            if (!File.Exists(filePath)) { return; }
 
+            //CSV読み込み.
             string[] lines = File.ReadAllLines(filePath);
             gridHei = lines.Length;
             gridWid = lines[0].Split(',').Length;
+            //新しいサイズで生成.
             mapData = new int[gridWid, gridHei];
-
+            //読み込んだデータを反映.
             for (int y = 0; y < gridHei; y++)
             {
                 string[] values = lines[y].Split(',');
@@ -276,8 +317,7 @@ namespace MyLib.MapEditor
 
             //古い親オブジェクトを削除.
             GameObject oldMap = GameObject.Find("GeneratedMap");
-            if (oldMap != null)
-                DestroyImmediate(oldMap);
+            if (oldMap != null) DestroyImmediate(oldMap);
             //新しい親オブジェクトを生成.
             GameObject parent = new GameObject("GeneratedMap");
 
