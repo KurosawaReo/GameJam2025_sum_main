@@ -1,14 +1,14 @@
 using UnityEngine;
 using Global;
-using MyLib.Object;
+using KR.Unity.Object;
 
 /// <summary>
 /// ブロッククラス.
 /// </summary>
-public class Block : MyObject
+public class Block : ObjectKR
 {
     [Header("- prefab -")]
-    [SerializeField] MyPrefab prfbBreak; //破壊アニメーション.
+    [SerializeField] PrefabKR prfbBreak; //破壊アニメーション.
 
     [Header("- sprite -")]
     [SerializeField] Sprite[] imgBlock; //画像.
@@ -25,7 +25,7 @@ public class Block : MyObject
 
     void Start()
     {
-        InitMyObj(); //MyObjの初期化.
+        InitObjKR(); //MyObjの初期化.
         SetImage();  //画像設定.
 
         //種類別の設定.
@@ -59,15 +59,15 @@ public class Block : MyObject
         switch (type)
         {
             case BlockType.Break: //壊せる.
-                MyObjImage = imgBlock[0];
+                cmp.sr.sprite = imgBlock[0];
                 break;
 
             case BlockType.Carry: //運べる.
-                MyObjImage = imgBlock[1];
+                cmp.sr.sprite = imgBlock[1];
                 break;
 
             case BlockType.Terrain: //地形.
-                MyObjImage = imgBlock[2];
+                cmp.sr.sprite = imgBlock[2];
                 break;
 
             default: Debug.LogError("[Error] 不正な値です。"); break;
@@ -79,10 +79,8 @@ public class Block : MyObject
     /// </summary>
     public void BreakBlock()
     {
-        //親オブジェクトを探す.
-        GameObject parent = GameObject.Find("EffectObjects");
         //prefab生成.
-        var obj = Instantiate(prfbBreak.obj, parent.transform);
+        var obj = prfbBreak.NewPrefab();
         obj.transform.position = transform.position;
 
         Destroy(gameObject); //ブロックは消滅.

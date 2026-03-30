@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135f239774074914db9b598bf74b66ef, type: 3}
+  m_Name: MapParts
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 7157965229037103819, guid: aa43ec8794b49cb4982126e9c90ba37e, type: 3}
+  - {fileID: 7157965229037103819, guid: 17167e59f2a38454b9270cf7a4b2ee38, type: 3}
+  - {fileID: 7157965229037103819, guid: 99b58bd9f9a953241a4c391cb884e105, type: 3}
