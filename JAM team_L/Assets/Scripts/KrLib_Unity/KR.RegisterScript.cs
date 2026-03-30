@@ -1,13 +1,13 @@
 /*
-   - MyLib.RegisterScript -
-   ver.2025/08/13
+   - KR.RegisterScript - (Unity)
+   ver.2025/11/09
 */
 using UnityEngine;
 
 /// <summary>
-/// MyLibで使うScriptableObject集.
+/// KR_Libで使うScriptableObject集.
 /// </summary>
-namespace MyLib.RegisterScript
+namespace KR.Unity.RegisterScript
 {
     /// <summary>
     /// 使用するprefabのパーツを登録する.

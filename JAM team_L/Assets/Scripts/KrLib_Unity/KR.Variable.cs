@@ -1,6 +1,6 @@
 /*
-   - MyLib.Variable -
-   ver.2025/06/28
+   - KR.Variable - (Unity)
+   ver.2025/11/09
 */
 using UnityEngine;
 using System;
@@ -8,7 +8,7 @@ using System;
 /// <summary>
 /// 変数用の追加機能.
 /// </summary>
-namespace MyLib.Variable
+namespace KR.Unity.Variable
 {
     /// <summary>
     /// 範囲ありint型変数.
@@ -87,6 +87,24 @@ namespace MyLib.Variable
         public void Reset()
         {
             now = init;
+        }
+    }
+
+    /// <summary>
+    /// Variable関数.
+    /// </summary>
+    public static class VA_Func
+    {
+        /// <summary>
+        /// 値のgetを試みる(初期化忘れ対策)
+        /// </summary>
+        public static T TryGet<T>(T value, string errorMng)
+        {
+            //nullならエラーを出す.
+            if (value == null) {
+                Debug.LogError(errorMng);
+            }
+            return value;
         }
     }
 }

@@ -1,20 +1,20 @@
 /*
-   - MyLib.MapEditor -
-   ver.2025/08/13
+   - KR.MapEditor - (Unity)
+   ver.2026/03/24
 
-   フォルダ: Editorに入れる
+   フォルダ: Assets/Editorに入れる
 */
 using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-using MyLib.Position;
-using MyLib.RegisterScript;
+using KR.Unity.Position;
+using KR.Unity.RegisterScript;
 
 /// <summary>
 /// マップ拡張エディタを追加する.
 /// </summary>
-namespace MyLib.MapEditor
+namespace KR.Unity.MapEditor
 {
     /// <summary>
     /// CSVでマップデータを管理する
@@ -331,7 +331,7 @@ namespace MyLib.MapEditor
                         GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(mapParts.prefabs[id]);
 
                         //画面の座標を取得.
-                        LBRT windowPos = PS_Func.GetWindowLBRT();
+                        LBRT windowPos = Func.GetWindowLBRT();
 
                         Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * gridSize;
                         Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);

@@ -1,19 +1,20 @@
 ﻿/*
-   - MyLib.Calc -
-   ver.2025/08/09
+   - KR.Calc - (Unity)
+   ver.2026/03/24
 */
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 /// <summary>
 /// 計算を扱う用の追加機能.
 /// </summary>
-namespace MyLib.Calc
+namespace KR.Unity.Calc
 {
     /// <summary>
-    /// Calc関数.
+    /// static関数.
     /// </summary>
-    public static class CL_Func
+    public static class Func
     {
         /// <summary>
         /// プラスかマイナスかを取得.
@@ -24,6 +25,47 @@ namespace MyLib.Calc
         {
             //0なら0、それ以外は符号を返す.
             return (num == 0) ? 0 : (num > 0) ? +1 : -1;
+        }
+
+        /// <summary>
+        /// 値が範囲内にあるかどうか.
+        /// </summary>
+        /// <param name="num">判定値</param>
+        /// <param name="low">最低値</param>
+        /// <param name="high">最大値</param>
+        /// <returns>範囲内ならtrue</returns>
+        public static bool IsRangeNum(int num, int low, int high)
+        {
+            return (low <= num) && (num <= high);
+        }
+        /// <summary>
+        /// 値が範囲内にあるかどうか.
+        /// </summary>
+        /// <param name="num">判定値</param>
+        /// <param name="low">最低値</param>
+        /// <param name="high">最大値</param>
+        /// <returns>範囲内ならtrue</returns>
+        public static bool IsRangeNum(double num, double low, double high)
+        {
+            return (low <= num) && (num <= high);
+        }
+
+        public static float FacingAng(Vector2 from, Vector2 to)
+        {
+            //距離差.
+            Vector2 dis = to - from;
+            //距離差を角度に.
+            return VectorToDeg(dis);
+        }
+
+        /// <summary>
+        /// ベクトルから角度を求める.
+        /// </summary>
+        /// <param name="dir">ベクトル方向</param>
+        /// <returns>角度(Deg)</returns>
+        public static float VectorToDeg(Vector2 dir)
+        {
+            return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         }
 
         /// <summary>

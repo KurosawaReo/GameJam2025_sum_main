@@ -1,33 +1,31 @@
 /*
-   - MyLib.InspectorEditor -
-   ver.2025/08/13
+   - KR.InspectorEditor - (Unity)
+   ver.2026/03/20
 
-   セットで使用: MyLib.Inspector
-   フォルダ: Editorに入れる
+   セットで使用: KR.Inspector
+   フォルダ: Assets/Editorに入れる
 */
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-using MyLib.Inspector;
+using KR.Unity.Inspector;
 
 /// <summary>
 /// インスペクター用の追加機能.
 /// </summary>
-namespace MyLib.InspectorEditor
+namespace KR.Unity.InspectorEditor
 {
-    //不明.
-    using GetCondFunc = Func<SerializedProperty, InspectorDisableAttribute, bool>;
-
     /// <summary>
-    /// Attributeの方で保存した値を読み取るclass.
-    /// ここでInspector表示の設定をする.
+    /// [InspectorDisable()]
     /// </summary>
     [CustomPropertyDrawer(typeof(InspectorDisableAttribute))]
     internal sealed class ConditionalDisableDrawer : PropertyDrawer
     {
     //▼メンバ.
+        private delegate bool GetCondFunc(SerializedProperty prop, InspectorDisableAttribute attr);
+
         //???
         private Dictionary<Type, GetCondFunc> DisableCondFuncMap = new Dictionary<Type, GetCondFunc>() {
             { typeof(bool),   (prop, attr) => { return attr.isDisable ? !prop.boolValue : prop.boolValue;} },
@@ -73,7 +71,7 @@ namespace MyLib.InspectorEditor
 
             //???
             var isDisable = IsDisable(attr, prop);
-            if (attr.isInvisible && isDisable)
+            if (attr.isInvisiOffMode && isDisable)
             {
                 return; //この先の処理をしない.
             }
@@ -109,7 +107,7 @@ namespace MyLib.InspectorEditor
                 }
             }
             //適切な高さを返す.
-            if (attr.isInvisible && IsDisable(attr, prop))
+            if (attr.isInvisiOffMode && IsDisable(attr, prop))
             {
                 return -EditorGUIUtility.standardVerticalSpacing;   //非表示時の表示位置.
             }
@@ -136,6 +134,23 @@ namespace MyLib.InspectorEditor
             }
             //結果を返す.
             return condFunc(prop, attr);
+        }
+    }
+
+    /// <summary>
+    /// [ReadOnly]
+    /// </summary>
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            //編集不可にする.
+            GUI.enabled = false;
+            //Inspector描画.
+            EditorGUI.PropertyField(position, property, label, true);
+            //元に戻す.
+            GUI.enabled = true;
         }
     }
 }

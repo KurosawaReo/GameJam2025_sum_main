@@ -1,13 +1,13 @@
 /*
-   - MyLib.Position -
-   ver.2025/08/09
+   - KR.Position - (Unity)
+   ver.2026/03/24
 */
 using UnityEngine;
 
 /// <summary>
 /// 座標管理をする用の追加機能.
 /// </summary>
-namespace MyLib.Position
+namespace KR.Unity.Position
 {
     /// <summary>
     /// 上下左右.
@@ -30,29 +30,20 @@ namespace MyLib.Position
     }
 
     /// <summary>
-    /// Position関数.
+    /// static関数.
     /// </summary>
-    public static class PS_Func
+    public static class Func
     {
         /// <summary>
         /// 画面の上下左右の座標を取得.
-        /// (mainカメラがOrthographicモードの時限定)
         /// </summary>
         public static LBRT GetWindowLBRT()
         {
-            Camera cam = Camera.main; //カメラを取得.
+            //左下と右上の座標取得.
+            Vector3 lb = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            Vector3 rt = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
-            Vector3 center = cam.transform.position;    //中央を求める.
-            float   height = cam.orthographicSize * 2f; //縦幅を求める(サイズからを計算)
-            float   width  = height * cam.aspect;       //縦幅を求める(アスペクト比から計算)
-
-            //四方の座標を求める.
-            float left   = center.x - width /2f;
-            float right  = center.x + width /2f;
-            float bottom = center.y - height/2f;
-            float top    = center.y + height/2f;
-
-            return new LBRT(left, bottom, right, top);
+            return new LBRT(lb.x, lb.y, rt.x, rt.y);
         }
 
         /// <summary>
@@ -62,7 +53,7 @@ namespace MyLib.Position
         /// <param name="size">オブジェクトサイズ</param>
         /// <param name="lim">限界座標(上下左右)</param>
         /// <returns>補正済座標</returns>
-        public static Vector3 FixPosInArea(Vector3 pos, Vector2 size, LBRT lim)
+        public static Vector3KR FixPosInArea(Vector3KR pos, Vector2 size, LBRT lim)
         {
             if (pos.x < lim.left   + size.x/2) { pos.x = lim.left   + size.x/2; }
             if (pos.y < lim.bottom + size.y/2) { pos.y = lim.bottom + size.y/2; }
@@ -95,5 +86,37 @@ namespace MyLib.Position
             var lPos = obj.transform.InverseTransformPoint(wPos);
             return lPos;
         }
+    }
+
+    /// <summary>
+    /// Vector3の機能拡張.
+    /// </summary>
+    public class Vector3KR
+    {
+        private Vector3 vec; //本体データ.
+
+        //x,y,zのアクセス.
+        public float x { get => vec.x; set => vec.x = value; }
+        public float y { get => vec.y; set => vec.y = value; }
+        public float z { get => vec.z; set => vec.z = value; }
+
+        //コンストラクタ.
+        public Vector3KR()
+            => vec = Vector3.zero;
+        public Vector3KR(Vector3 v)
+            => vec = v;
+        public Vector3KR(float x, float y, float z)
+            => vec = new Vector3(x, y, z);
+
+        //get.
+        public Vector3 GetVector3() => vec;
+
+        //「=」演算子用.
+        public static implicit operator Vector3(Vector3KR v) => v.vec;
+        public static implicit operator Vector3KR(Vector3 v) => new Vector3KR(v);
+        //「+」演算子用.
+        public static Vector3KR operator+(Vector3KR a, Vector3 b) => new Vector3KR(a.vec + b);
+        //「-」演算子用.
+        public static Vector3KR operator-(Vector3KR a, Vector3 b) => new Vector3KR(a.vec - b);
     }
 }

@@ -1,14 +1,14 @@
 using UnityEngine;
 using Global;
-using MyLib.Object;
+using KR.Unity.Object;
 
 /// <summary>
 /// ブロッククラス.
 /// </summary>
-public class Block : MyObject
+public class Block : ObjectKR
 {
     [Header("- prefab -")]
-    [SerializeField] MyPrefab prfbBreak; //破壊アニメーション.
+    [SerializeField] PrefabKR prfbBreak; //破壊アニメーション.
 
     [Header("- sprite -")]
     [SerializeField] Sprite[] imgBlock; //画像.
@@ -25,7 +25,7 @@ public class Block : MyObject
 
     void Start()
     {
-        InitMyObj(); //MyObjの初期化.
+        InitObjKR(); //MyObjの初期化.
         SetImage();  //画像設定.
 
         //種類別の設定.
@@ -80,9 +80,10 @@ public class Block : MyObject
     public void BreakBlock()
     {
         //親オブジェクトを探す.
-        GameObject parent = GameObject.Find("EffectObjects");
+//      GameObject parent = GameObject.Find("EffectObjects");
+
         //prefab生成.
-        var obj = Instantiate(prfbBreak.obj, parent.transform);
+        var obj = prfbBreak.NewPrefab();
         obj.transform.position = transform.position;
 
         Destroy(gameObject); //ブロックは消滅.
