@@ -7,35 +7,37 @@ using Unity.VisualScripting;
 using JetBrains.Annotations;
 
 public class PlayerBody_Hokuto : MonoBehaviour
-
 {
+    [SerializeField] GameManager gameManager;
+
     [SerializeField] public bool isOperation = true;
 
     [SerializeField] public bool isGround;
     [Tooltip("プレイヤーのスピード倍率"), SerializeField] float moveSpeed;
     [SerializeField] float jumpPower;
-    [SerializeField] LayerMask groundlayer;     //接地判定するレイヤー
-    public bool startJump;                             //ジャンプするかどうか
-
-    public bool isJump;
-    Vector3 spownPosition;
+    [SerializeField] LayerMask groundlayer; //接地判定するレイヤー
     [SerializeField] bool isFront = true;
-//  [SerializeField] float soundTimePlus = 5f;
-//  float soundTime = 0;
+    [SerializeField] float deathZone = -7.0f;
 
-    PlayerAction_Hokuto controls;
+    public bool startJump; //ジャンプするかどうか
+    public bool isJump;
+
+    Vector3 spawnPosition;
     Vector2 moveInput;
 
-    Vector3 switchPosition;
+    PlayerAction_Hokuto controls;
 
-    [SerializeField] float deathZone = -7.0f;
-    // Start is called before the first frame update
+    //コンポーネント.
+    Animator    animator;
+    Rigidbody2D rb;
+
+    float initGrav = 0.0f; //重力初期値.
+
     void Start()
     {
         Init();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(isOperation)
@@ -45,7 +47,6 @@ public class PlayerBody_Hokuto : MonoBehaviour
             AnimationSet();
             GameOver();
             //PlaySoundEffects();
-            switchPosition = transform.position;
         }
         else
         {
@@ -132,7 +133,28 @@ public class PlayerBody_Hokuto : MonoBehaviour
         }
         isGround = true;
         startJump = false;
-        spownPosition = transform.position;
+        spawnPosition = transform.position;
+
+        //取得.
+        rb       = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+
+        initGrav = rb.gravityScale; //重力.
+    }
+
+    /// <summary>
+    /// 重力を0に.
+    /// </summary>
+    public void ZeroGravity()
+    {
+        rb.gravityScale = 0;
+    }
+    /// <summary>
+    /// 重力リセット.
+    /// </summary>
+    public void ResetGravity()
+    {
+        rb.gravityScale = initGrav;
     }
 
     /// <summary>
@@ -191,12 +213,13 @@ public class PlayerBody_Hokuto : MonoBehaviour
     void IsGround()
     {
         RaycastHit2D hit = Physics2D.BoxCast(
-                            transform.position,     //① 発射元（中心位置）
-                            new Vector2(0.8f, 2.7f),	//② Boxのサイズ（幅と高さ）
-                            0,                      //③ 回転角（今回は回転なし）
-                            new Vector2(0, -1.0f),	//④ 発射方向（下方向）
+                            transform.position,      //① 発射元（中心位置）
+                            new Vector2(0.8f, 2.7f), //② Boxのサイズ（幅と高さ）
+                            0,                       //③ 回転角（今回は回転なし）
+                            new Vector2(0, -1.0f),	 //④ 発射方向（下方向）
                             0.02f,                   //⑤ 距離（0.2ユニット下に向かって）
-                            groundlayer);			//⑥ 対象とするレイヤー（地面レイヤー）
+                            groundlayer);			 //⑥ 対象とするレイヤー（地面レイヤー）
+
         if (hit.collider != null)
         {
             isGround = true;
@@ -212,9 +235,10 @@ public class PlayerBody_Hokuto : MonoBehaviour
     /// </summary>
     void AnimationSet()
     {
-        //アニメーション状態の変更
-        GetComponent<Animator>().SetBool("isJump", !isGround);      //空中かどうか(!isGroundは地面かどうかが入ってるので地面でないのなら空中とみなす)
-        GetComponent<Animator>().SetFloat("move", Mathf.Abs(moveInput.x));
+        //空中かどうか(!isGroundは地面かどうかが入ってるので地面でないのなら空中とみなす)
+        animator.SetBool("isJump", !isGround);
+
+        animator.SetFloat("move", Mathf.Abs(moveInput.x));
     }
 
     /// <summary>
@@ -224,7 +248,7 @@ public class PlayerBody_Hokuto : MonoBehaviour
     {
         if (transform.position.y <= deathZone)
         {
-            transform.position = spownPosition;
+            transform.position = spawnPosition;
         }
     }
 
@@ -251,12 +275,11 @@ public class PlayerBody_Hokuto : MonoBehaviour
 
     void OnSceneReset(InputAction.CallbackContext ctx)
     {
-        //現在のシーンをやり直す.
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        gameManager.SceneToReset();
     }
     void OnSceneTitle(InputAction.CallbackContext ctx)
     {
-        SceneManager.LoadScene("TitleScene");
+        gameManager.SceneToTitle();
     }
 
     void OnPlayerJump(InputAction.CallbackContext ctx)

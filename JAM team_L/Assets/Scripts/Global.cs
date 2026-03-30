@@ -22,35 +22,4 @@ namespace Global
         Normal,
         Hard
     }
-
-    /// <summary>
-    /// GlobalíËêî.
-    /// </summary>
-    public static class GL_Const
-    {
-#if false
-        //ó·:
-        public const int COUNT = 3;
-        
-        public static string[] TEXT =
-        {
-            "AAA",
-            "BBB",
-            "CCC",
-        };
-#endif
-    }
-
-    /// <summary>
-    /// Globalä÷êî.
-    /// </summary>
-    public static class GL_Func
-    {
-#if false
-        public static void Test()
-        {
-
-        }
-#endif
-    }
 }

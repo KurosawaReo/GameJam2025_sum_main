@@ -3,23 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerOperationSwitch_Hokuto : MonoBehaviour
 {
-    [SerializeField]PlayerBody_Hokuto body;
-    [SerializeField]PlayerHead_Hokuto head;
+    [SerializeField] PlayerBody_Hokuto body;
+    [SerializeField] PlayerHead_Hokuto head;
 
     bool isBody = true;
 
     PlayerOperationSwitchAction_Hokuto action;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void Awake()
     {

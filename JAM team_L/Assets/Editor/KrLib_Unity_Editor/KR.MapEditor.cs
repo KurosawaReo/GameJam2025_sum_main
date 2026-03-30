@@ -326,7 +326,7 @@ namespace KR.Unity.MapEditor
             //古い親オブジェクトを削除.
             GameObject oldMap = GameObject.Find("GeneratedMap");
             if (oldMap != null) {
-                DestroyImmediate(oldMap); 
+                DestroyImmediate(oldMap);
             }
             //新しい親オブジェクトを生成.
             GameObject parent = new GameObject("GeneratedMap");
@@ -349,11 +349,13 @@ namespace KR.Unity.MapEditor
                             GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(select);
 
                             //画面の座標を取得.
-                            LBRT windowPos = Position.Func.GetWindowLBRT();
+                            LBRT    windowPos = Position.Func.GetWindowLBRT();
+                            //基準点.
+                            Vector3 startPos  = new Vector3(windowPos.left+0.5f, windowPos.top-0.5f, 0);
+                            //ずらす座標.
+                            Vector3 shift     = new Vector3(x, -y, 0) * gridSize;
 
-                            Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * gridSize;
-                            Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);
-                            obj.transform.position = startPos + pos;
+                            obj.transform.position   = startPos + shift;
                             obj.transform.localScale = Vector3.one * gridSize;
                             obj.transform.SetParent(parent.transform);
                         }

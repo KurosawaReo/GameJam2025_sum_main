@@ -1,7 +1,8 @@
 /*
    - KR.Position - (Unity)
-   ver.2026/03/24
+   ver.2026/03/30
 */
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -39,9 +40,13 @@ namespace KR.Unity.Position
         /// </summary>
         public static LBRT GetWindowLBRT()
         {
-            //左下と右上の座標取得.
-            Vector3 lb = Camera.main.ScreenToWorldPoint(Vector3.zero);
-            Vector3 rt = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+            //カメラ取得.
+            Camera cam = Camera.main;
+            //カメラの描画領域を取得.
+            Rect rect = cam.pixelRect;
+            //画面の左上から右下座標を取得.
+            Vector3 lb = cam.ScreenToWorldPoint(new Vector3(rect.xMin, rect.yMin));
+            Vector3 rt = cam.ScreenToWorldPoint(new Vector3(rect.xMax, rect.yMax));
 
             return new LBRT(lb.x, lb.y, rt.x, rt.y);
         }

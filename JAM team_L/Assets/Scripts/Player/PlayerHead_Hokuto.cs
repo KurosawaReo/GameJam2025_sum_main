@@ -1,16 +1,13 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using System;
-using UnityEngine.UIElements;
-using Unity.VisualScripting;
 
 public class PlayerHead_Hokuto : MonoBehaviour
 {
+    [SerializeField] GameObject playerBody; //bodyのprefab.
+
     [SerializeField] public bool isOperation = false;
     [SerializeField] float rotateSpeed = 1.0f;
-
-    [SerializeField] GameObject playerBody;
 
     [SerializeField] float headPosition = 1.0f;
 
@@ -18,6 +15,10 @@ public class PlayerHead_Hokuto : MonoBehaviour
     [SerializeField] float lineThickness = 0.5f; // 線の太さ
     [SerializeField] public LineRenderer lineRenderer;
     [SerializeField] public LineRenderer neckLineRenderer;
+    
+    [SerializeField] float moveTime = 1.0f;
+    [SerializeField] public float pullSpeed = 1.0f;
+
     Vector3 headMoveStartPosition;
     Vector3 headMoveEnd;
     Vector3 headMoveEndPosition;
@@ -25,7 +26,6 @@ public class PlayerHead_Hokuto : MonoBehaviour
     float time = 0;
     int moveCount = 0;
 
-    [SerializeField] float moveTime = 1.0f;
 
     bool isTouchObject = false;
 
@@ -40,7 +40,15 @@ public class PlayerHead_Hokuto : MonoBehaviour
     Collider2D blockSave;
 
     bool isPushPull = false;
-    [SerializeField] public float pullSpeed = 1.0f;
+
+    //コンポーネント.
+    Animator    animator;
+    Rigidbody2D rb_block;
+
+    //script
+    PlayerBody_Hokuto scptBody;
+    Block             scptBlock; 
+
     void Start()
     {
         Init();
@@ -56,14 +64,12 @@ public class PlayerHead_Hokuto : MonoBehaviour
         {
             transform.position = new Vector3(playerBody.transform.position.x, playerBody.transform.position.y + headPosition, 0);
         }
-        GetComponent<Animator>().SetBool("CloseStop",isTouchObject);
-        GetComponent<Animator>().SetBool("OpenStop", isOperation);
+        animator.SetBool("CloseStop",isTouchObject);
+        animator.SetBool("OpenStop", isOperation);
     }
 
     void Init()
     {
-        //lineRenderer = GetComponent<LineRenderer>();
-        //neckLineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer == null)
         {
             Debug.LogWarning("LineRenderer が見つかりません。自動追加します。");
@@ -75,6 +81,9 @@ public class PlayerHead_Hokuto : MonoBehaviour
             neckLineRenderer = gameObject.AddComponent<LineRenderer>();
         }
 
+        //取得.
+        animator = GetComponent<Animator>();
+        scptBody = playerBody.GetComponent<PlayerBody_Hokuto>();
 
         neckLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         neckLineRenderer.positionCount = 2;
@@ -102,7 +111,7 @@ public class PlayerHead_Hokuto : MonoBehaviour
                 rotate *= -1.0f; //逆回転.
             }
             //回転実行.
-            transform.Rotate(0, 0, rotate);
+            transform.Rotate(0, 0, rotate * Time.deltaTime);
         }
     }
 
@@ -205,13 +214,13 @@ public class PlayerHead_Hokuto : MonoBehaviour
 
     private void OnPullStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Pull started: isPushPull = " + isPushPull);
+        Debug.Log("Pull started");
         isPushPull = true;
     }
 
     private void OnPullCanceled(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Pull canceled: isPushPull = " + isPushPull);
+        Debug.Log("Pull canceled");
         isPushPull = false;
     }
 
@@ -229,30 +238,37 @@ public class PlayerHead_Hokuto : MonoBehaviour
         lineRenderer.SetPosition(1, end);
     }
 
+    /// <summary>
+    /// 頭の動き.
+    /// </summary>
     void HeadOperation()
     {
+        //取得.
+        if (blockSave != null)
+        {
+            rb_block  = blockSave.GetComponent<Rigidbody2D>();
+            scptBlock = blockSave.GetComponent<Block>();
+        }
+
         if (isMovingHead)
         {
             Vector3 start = playerBody.transform.position + new Vector3(0,headPosition - 0.2f,0);
-            Vector3 direction = transform.right;
-            Vector3 end = transform.position;
+            Vector3 end   = transform.position;
 
             neckLineRenderer.SetPosition(0, start);
             neckLineRenderer.SetPosition(1, end);
             neckLineRenderer.enabled = true;
             if (!isTouchObject)
             {
-                if(blockSave != null)
+                if (blockSave != null)
                 {
-                    Rigidbody2D rb = blockSave.GetComponent<Rigidbody2D>();
-                    Rigidbody2D rb_body = playerBody.GetComponent<Rigidbody2D>();
-                    if(blockSave.GetComponent<Block>().IsMoveAble == true)
+                    if(scptBlock.IsMoveAble == true)
                     {
-                        rb.gravityScale = 1.0f;
+                        rb_block.gravityScale = 1.0f;
                     }
                     else
                     {
-                        rb_body.gravityScale = 1.0f;
+                        scptBody.ResetGravity();
                     }
                 }
                 time += Time.deltaTime;
@@ -260,22 +276,19 @@ public class PlayerHead_Hokuto : MonoBehaviour
             }
             else
             {
-                Rigidbody2D rb = blockSave.GetComponent<Rigidbody2D>();
-                Rigidbody2D rb_body = playerBody.GetComponent<Rigidbody2D>();
-                if (blockSave.GetComponent<Block>().IsMoveAble == true)
+                if (scptBlock.IsMoveAble == true)
                 {
-                    rb.gravityScale = 0f;
+                    rb_block.gravityScale = 0f;
                 }
                 else
                 {
-                    rb_body.gravityScale = 0f;
+                    scptBody.ZeroGravity();
                 }
                 if (isPushPull)  // ここを追加
                 {
                     if (blockSave != null)
                     {
-                        Block blockScript = blockSave.GetComponent<Block>();
-                        if (blockScript != null && blockScript.IsMoveAble)
+                        if (scptBlock.IsMoveAble)
                         {
                             Vector3 playerBodyPosition = new Vector3(playerBody.transform.position.x, playerBody.transform.position.y + headPosition, playerBody.transform.position.z);
                             Vector3 directionToPlayer = (playerBodyPosition - transform.position).normalized;
@@ -284,9 +297,9 @@ public class PlayerHead_Hokuto : MonoBehaviour
                             blockSave.transform.position += moveVector;
                             transform.position += moveVector;
                         }
-                        else if (blockScript != null && !blockScript.IsMoveAble)
+                        else if (!scptBlock.IsMoveAble)
                         {
-                            rb_body.gravityScale = 0;
+                            scptBody.ZeroGravity();
                             Vector3 playerHeadPosition = new Vector3(transform.position.x, transform.position.y - headPosition, transform.position.z);
                             Vector3 directionToPlayer = (playerHeadPosition - playerBody.transform.position).normalized;
                             Vector3 moveVector = directionToPlayer * pullSpeed * Time.deltaTime;
@@ -298,15 +311,15 @@ public class PlayerHead_Hokuto : MonoBehaviour
                 }
                 if (isBreak)
                 {
-                    if(blockSave.GetComponent<Block>().IsBreakAble)
+                    if(scptBlock.IsBreakAble)
                     {
-                        rb_body.gravityScale = 1.0f;
+                        scptBody.ResetGravity();
                         Vector3 temp = headMoveStartPosition;
                         headMoveStartPosition = transform.position;
                         headMoveEndPosition = temp;
                         time = 0;
                         moveCount = 1;
-                        blockSave.GetComponent<Block>().BreakBlock();
+                        scptBlock.BreakBlock();
                         isTouchObject = false;
                     }
                     isBreak = false;
@@ -319,7 +332,6 @@ public class PlayerHead_Hokuto : MonoBehaviour
                 {
                     if (moveCount == 0)
                     {
-                        
                         // 行き終わり → 戻り開始
                         Vector3 temp = headMoveStartPosition;
                         headMoveStartPosition = headMoveEndPosition;

@@ -105,17 +105,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eedb0f4ccbe10e94ba08871dc7dafc56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isOperation: 0
-  rotateSpeed: 0.7
   playerBody: {fileID: 0}
+  isOperation: 0
+  rotateSpeed: 150
   headPosition: 1.2
   lineLength: 20
   lineThickness: 0.15
   lineRenderer: {fileID: 393068861524677735}
   neckLineRenderer: {fileID: 6656224437905495989}
   moveTime: 0.5
+  pullSpeed: 8
   isMovingHead: 0
-  pullSpeed: 5
 --- !u!120 &393068861524677735
 LineRenderer:
   serializedVersion: 2

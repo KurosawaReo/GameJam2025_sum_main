@@ -209,7 +209,7 @@ public partial class @PlayerHeadAction_Hokuto: IInputActionCollection2, IDisposa
                 {
                     ""name"": """",
                     ""id"": ""6f8705a5-9f43-4ba5-8999-8bf8c9fe345a"",
-                    ""path"": ""<Keyboard>/w"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
