@@ -94,12 +94,14 @@ public class PlayerHead_Hokuto : MonoBehaviour
     void PlayerHeadRotate()
     {
         float rotate = rotateSpeed;
+        //“ü—Í‚ª‚ ‚ê‚Î.
         if (0.1 <= Math.Abs(moveInput.x))
         {
-            if (moveInput.x < -0.1f)
+            if (moveInput.x < 0)
             {
-                rotate *= -1.0f;
+                rotate *= -1.0f; //‹t‰ñ“].
             }
+            //‰ñ“]ŽÀs.
             transform.Rotate(0, 0, rotate);
         }
     }
@@ -108,7 +110,6 @@ public class PlayerHead_Hokuto : MonoBehaviour
     {
         if (collision.gameObject.tag == "block" && isOperation)
         {
-            //Debug.Log("test");
             isTouchObject = true;
             blockSave = collision;
         }
@@ -226,8 +227,6 @@ public class PlayerHead_Hokuto : MonoBehaviour
 
         lineRenderer.SetPosition(0, start);
         lineRenderer.SetPosition(1, end);
-
-
     }
 
     void HeadOperation()

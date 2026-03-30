@@ -102,8 +102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAutoInit: 1
-  initPos: {x: 0, y: 0}
-  initFacing: {x: 0, y: 0}
+  initPos: {x: 0, y: 0, z: 0}
+  initFacing: {x: 0, y: 0, z: 0}
   initActive: 1
   initFlip: 0
   size: {x: 1, y: 1}
@@ -112,8 +112,8 @@ MonoBehaviour:
     min: 0
     init: 0
   prfbBreak:
-    obj: {fileID: 6503330705393193217, guid: 61341ae7b877b724094b7516d8bb5293, type: 3}
-    parent: {fileID: 0}
+    prefab: {fileID: 6503330705393193217, guid: 61341ae7b877b724094b7516d8bb5293, type: 3}
+    inObj: {fileID: 0}
   imgBlock:
   - {fileID: -4094169890286684482, guid: d1d614013a353664f8a7575003d99be0, type: 3}
   - {fileID: 6045276732608806655, guid: 4d3f2bce61f7daf45bfe71693c3a5f9b, type: 3}

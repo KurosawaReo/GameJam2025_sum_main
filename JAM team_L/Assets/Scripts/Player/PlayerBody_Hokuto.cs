@@ -251,12 +251,11 @@ public class PlayerBody_Hokuto : MonoBehaviour
 
     void OnSceneReset(InputAction.CallbackContext ctx)
     {
-        Debug.Log("test");
-        SceneManager.LoadScene("SerectScene");
+        //åªç›ÇÃÉVÅ[ÉìÇÇ‚ÇËíºÇ∑.
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     void OnSceneTitle(InputAction.CallbackContext ctx)
     {
-        Debug.Log("test");
         SceneManager.LoadScene("TitleScene");
     }
 
@@ -266,15 +265,5 @@ public class PlayerBody_Hokuto : MonoBehaviour
         {
             isJump = true;
         }
-    }
-
-    public void GoBackTitle()
-    {
-        SceneManager.LoadScene("TitleScene");
-    }
-
-    public void GoBackStageSelect()
-    {
-        SceneManager.LoadScene("SerectScene");
     }
 }

@@ -79,9 +79,6 @@ public class Block : ObjectKR
     /// </summary>
     public void BreakBlock()
     {
-        //親オブジェクトを探す.
-//      GameObject parent = GameObject.Find("EffectObjects");
-
         //prefab生成.
         var obj = prfbBreak.NewPrefab();
         obj.transform.position = transform.position;

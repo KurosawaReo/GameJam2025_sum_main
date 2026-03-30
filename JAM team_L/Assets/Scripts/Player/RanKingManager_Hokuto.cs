@@ -76,13 +76,4 @@ public class RanKingManager_Hokuto : MonoBehaviour
 
         SaveRanking();
     }
-    public void GoBackTitle()
-    {
-        SceneManager.LoadScene("TitleScene");
-    }
-
-    public void GoBackStageSelect()
-    {
-        SceneManager.LoadScene("SerectScene");
-    }
 }
