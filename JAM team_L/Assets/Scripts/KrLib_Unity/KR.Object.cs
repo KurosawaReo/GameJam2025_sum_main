@@ -1,6 +1,6 @@
 /*
    - KR.Object - (Unity)
-   ver.2026/03/24
+   ver.2026/03/30
 */
 using UnityEngine;
 using UE = UnityEngine;
@@ -276,7 +276,7 @@ namespace KR.Unity.Object
         /// </summary>
         public T TryGet<T>(T value)
         {
-            return VA_Func.TryGet(value, "[ObjectKR] InitObjKR関数を実行していません");
+            return Variable.Func.TryGet(value, "[ObjectKR] InitObjKR関数を実行していません");
         }
     }
 

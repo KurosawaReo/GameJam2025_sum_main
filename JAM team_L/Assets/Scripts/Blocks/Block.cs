@@ -59,15 +59,15 @@ public class Block : ObjectKR
         switch (type)
         {
             case BlockType.Break: //壊せる.
-                MyObjImage = imgBlock[0];
+                cmp.sr.sprite = imgBlock[0];
                 break;
 
             case BlockType.Carry: //運べる.
-                MyObjImage = imgBlock[1];
+                cmp.sr.sprite = imgBlock[1];
                 break;
 
             case BlockType.Terrain: //地形.
-                MyObjImage = imgBlock[2];
+                cmp.sr.sprite = imgBlock[2];
                 break;
 
             default: Debug.LogError("[Error] 不正な値です。"); break;

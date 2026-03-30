@@ -1,6 +1,6 @@
 /*
    - KR.Variable - (Unity)
-   ver.2025/11/09
+   ver.2026/03/30
 */
 using UnityEngine;
 using System;
@@ -93,7 +93,7 @@ namespace KR.Unity.Variable
     /// <summary>
     /// VariableŠÖ”.
     /// </summary>
-    public static class VA_Func
+    public static class Func
     {
         /// <summary>
         /// ’l‚Ìget‚ğ‚İ‚é(‰Šú‰»–Y‚ê‘Îô)
@@ -105,6 +105,24 @@ namespace KR.Unity.Variable
                 Debug.LogError(errorMng);
             }
             return value;
+        }
+
+        /*
+           where T : IComparable<T>
+           ¨‘å¬”äŠr‚Å‚«‚é(CompareTo‚ªg‚¦‚é)Œ^‚¾‚¯OK
+
+           [CompareTo()‚Ì•Ô‚è’l]
+           +1: ‘å‚«‚¢
+            0: “¯‚¶
+           -1: ¬‚³‚¢
+        */
+
+        /// <summary>
+        /// ’l‚ª”ÍˆÍ“à‚ÉŠÜ‚Ü‚ê‚é‚©”»’è.
+        /// </summary>
+        public static bool IsInRange<T>(T value, T min, T max) where T : System.IComparable<T>
+        {
+            return value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0;
         }
     }
 }

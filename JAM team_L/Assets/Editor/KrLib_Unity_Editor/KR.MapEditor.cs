@@ -1,6 +1,6 @@
 /*
    - KR.MapEditor - (Unity)
-   ver.2026/03/24
+   ver.2026/03/30
 
    フォルダ: Assets/Editorに入れる
 */
@@ -9,6 +9,7 @@ using UnityEditor;
 using System.IO;
 
 using KR.Unity.Position;
+using KR.Unity.Variable;
 using KR.Unity.RegisterScript;
 
 /// <summary>
@@ -47,7 +48,7 @@ namespace KR.Unity.MapEditor
         private void OnEnable()
         {
             mapData = new int[gridWid, gridHei];
-            filePath = "Assets/Resources/map.csv"; //初期パス.
+            filePath = "Assets/Resources/.csv"; //初期パス.
             gridSize = 1;
         }
         /// <summary>
@@ -191,7 +192,7 @@ namespace KR.Unity.MapEditor
                         {
                             bgColor = new Color(0.7f, 0.7f, 0.7f);
                         }
-                        else if (id == selectNo)
+                        else if (id == selectNo+1)
                         {
                             bgColor = Color.HSVToRGB((id*0.15f) % 1f, 0.5f, 1f); //IDごとに色分け.
                         }
@@ -201,18 +202,22 @@ namespace KR.Unity.MapEditor
                         }
                         GUI.backgroundColor = bgColor; //色反映.
 
-                        // ボタン描画
+                        //ボタン描画.
                         string label = id.ToString();
                         if (GUILayout.RepeatButton(label, GUILayout.Width(20), GUILayout.Height(20)))
                         {
                             if (Event.current.button == 1)
-                                mapData[x, y] = 0; // 右クリックで消去
+                            {
+                                mapData[x, y] = 0;          //右クリックで消去.
+                            }
                             else
-                                mapData[x, y] = selectNo; // 左クリックで配置
+                            {
+                                mapData[x, y] = selectNo+1; //左クリックで配置.
+                            }
                             GenerateMap();
                         }
 
-                        // 背景色リセット
+                        //背景色リセット.
                         GUI.backgroundColor = Color.white;
                     }
                     EditorGUILayout.EndHorizontal();
@@ -269,8 +274,9 @@ namespace KR.Unity.MapEditor
                 {
                     string[] row = new string[gridWid];
                     for (int x = 0; x < gridWid; x++)
+                    {
                         row[x] = mapData[x, y].ToString();
-
+                    }
                     sw.WriteLine(string.Join(",", row));
                 }
             }
@@ -298,7 +304,9 @@ namespace KR.Unity.MapEditor
             {
                 string[] values = lines[y].Split(',');
                 for (int x = 0; x < gridWid; x++)
+                {
                     int.TryParse(values[x], out mapData[x, y]);
+                }
             }
 
             Debug.Log("Map loaded from " + filePath);
@@ -309,35 +317,48 @@ namespace KR.Unity.MapEditor
         /// </summary>
         void GenerateMap()
         {
-            if (mapParts == null || mapParts.prefabs == null || mapParts.prefabs.Length == 0)
+            //マップパーツに不備があれば.
+            if (mapParts == null || 
+                mapParts.prefabs == null || 
+                mapParts.prefabs.Length == 0)
             {
-                Debug.LogError("マップ生成に使うプレファブがありません");
-                return;
+                return; //中断.
             }
 
             //古い親オブジェクトを削除.
             GameObject oldMap = GameObject.Find("GeneratedMap");
-            if (oldMap != null) DestroyImmediate(oldMap);
+            if (oldMap != null) {
+                DestroyImmediate(oldMap); 
+            }
             //新しい親オブジェクトを生成.
             GameObject parent = new GameObject("GeneratedMap");
 
-            for (int y = 0; y < gridHei; y++)
-            {
-                for (int x = 0; x < gridWid; x++)
-                {
+            for (int y = 0; y < gridHei; y++) {
+                for (int x = 0; x < gridWid; x++) {
+
+                    //マップデータからid取得.
                     int id = mapData[x, y];
-                    if (id > 0 && id < mapParts.prefabs.Length && mapParts.prefabs[id] != null)
+
+                    //iマップパーツが存在するなら.
+                    if (Variable.Func.IsInRange(id, 1, mapParts.prefabs.Length)) 
                     {
-                        GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(mapParts.prefabs[id]);
+                        //マップパーツのprefab選択.
+                        GameObject select = mapParts.prefabs[id - 1];
 
-                        //画面の座標を取得.
-                        LBRT windowPos = Func.GetWindowLBRT();
+                        if (select)
+                        {
+                            //prefab生成.
+                            GameObject obj    = (GameObject)PrefabUtility.InstantiatePrefab(select);
 
-                        Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * gridSize;
-                        Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);
-                        obj.transform.position = startPos + pos;
-                        obj.transform.localScale = Vector3.one * gridSize;
-                        obj.transform.SetParent(parent.transform);
+                            //画面の座標を取得.
+                            LBRT windowPos = Position.Func.GetWindowLBRT();
+
+                            Vector3 pos      = new Vector3(x+0.5f, -y-0.5f, 0) * gridSize;
+                            Vector3 startPos = new Vector3(windowPos.left, windowPos.top, 0);
+                            obj.transform.position = startPos + pos;
+                            obj.transform.localScale = Vector3.one * gridSize;
+                            obj.transform.SetParent(parent.transform);
+                        }
                     }
                 }
             }
@@ -349,8 +370,8 @@ namespace KR.Unity.MapEditor
         private void DrawSeparator()
         {
             Color color = EditorGUIUtility.isProSkin
-            ? new Color(0.3f, 0.3f, 0.3f) // Dark Skin
-            : new Color(0.6f, 0.6f, 0.6f); // Light Skin
+                ? new Color(0.3f, 0.3f, 0.3f)  // Dark  Skin
+                : new Color(0.6f, 0.6f, 0.6f); // Light Skin
 
             Rect rect = EditorGUILayout.GetControlRect(false, 2);
             EditorGUI.DrawRect(rect, color);

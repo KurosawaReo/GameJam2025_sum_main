@@ -1,6 +1,6 @@
 /*
    - KR.RegisterScript - (Unity)
-   ver.2025/11/09
+   ver.2026/03/30
 */
 using UnityEngine;
 
