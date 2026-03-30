@@ -153,8 +153,6 @@ namespace KR.Unity.MapEditor
                     }
                     EditorGUILayout.EndHorizontal();
                 }
-
-    //          EditorGUILayout.LabelField($"Current Tile ID: {selectNo}");
             }
             else
             {
@@ -348,7 +346,7 @@ namespace KR.Unity.MapEditor
                         if (select)
                         {
                             //prefab生成.
-                            GameObject obj    = (GameObject)PrefabUtility.InstantiatePrefab(select);
+                            GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(select);
 
                             //画面の座標を取得.
                             LBRT windowPos = Position.Func.GetWindowLBRT();
