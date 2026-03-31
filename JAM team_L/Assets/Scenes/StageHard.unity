@@ -5962,9 +5962,9 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 695018890}
-    - target: {fileID: 3947152705474183756, guid: f87ab7ef87176014f8b1d44ee32d22f5, type: 3}
-      propertyPath: m_VertexColorAlwaysGammaSpace
-      value: 1
+    - target: {fileID: 8439636874399429428, guid: f87ab7ef87176014f8b1d44ee32d22f5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
